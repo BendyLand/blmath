@@ -2,6 +2,7 @@ package blmath
 
 import "core:fmt"
 import "core:os"
+import "core:slice"
 import "core:strings"
 import "core:math"
 import "errors"
@@ -12,6 +13,7 @@ main :: proc() {
     op, err := operations.get_operation(os.args)
     if err.kind != errors.Error_Kind.Nil {
         fmt.println("Error:", err.text)
+        utils.print_help()
         return
     }
     result: string
@@ -96,17 +98,43 @@ mean :: proc(args: []string) -> string {
 }
 
 median :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args[1:])
+    utils.sort(&nums)
+    length := len(nums)
+    result: string
+    if length % 2 == 0 {
+        mid := length / 2 - 1
+        temp := (f64(nums[mid]) + f64(nums[mid+1])) / 2
+        result = utils.to_string(temp)
+    }
+    else {
+        mid := length / 2 
+        temp := nums[mid]
+        result = utils.to_string(temp)
+    }
+    return result
 }
 
 range :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args)
+    min := slice.min(nums)
+    max := slice.max(nums)
+    diff := max - min
+    result := utils.to_string(diff)
+    return result
 }
 
 sort :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args)
+    utils.sort(&nums)
+    result := utils.to_string(nums)
+    return result
 }
 
 rsort :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args)
+    utils.sort(&nums)
+    utils.reverse(&nums)
+    result := utils.to_string(nums)
+    return result
 }
