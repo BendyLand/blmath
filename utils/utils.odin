@@ -124,7 +124,7 @@ int_slice_to_string :: proc(slice: []int) -> string {
         item_str := to_string(item)
         temp[i] = item_str
     }
-    result := strings.join(temp, ", ")
+    result := strings.join(temp, " ")
     return result
 }
 
@@ -135,7 +135,7 @@ f64_slice_to_string :: proc(slice: []f64) -> string {
         item_str := to_string(item)
         temp[i] = item_str
     }
-    result := strings.join(temp, ", ")
+    result := strings.join(temp, " ")
     return result
 }
 
