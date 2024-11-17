@@ -15,27 +15,28 @@ main :: proc() {
         return
     }
     result: string
+    args := os.args[1:]
     switch op {
     case operations.Operation.Additon:
-        result = add(os.args[1:])
+        result = add(args)
     case operations.Operation.Subtraction:
-        result = subtract(os.args)
+        result = subtract(args)
     case operations.Operation.Multiplication:
-        result = multiply(os.args)
+        result = multiply(args)
     case operations.Operation.Division:
-        result = divide(os.args)
+        result = divide(args)
     case operations.Operation.Modulo:
-        result = remainder(os.args)
+        result = remainder(args)
     case operations.Operation.Mean:
-        result = mean(os.args)
+        result = mean(args)
     case operations.Operation.Median:
-        result = median(os.args)
+        result = median(args)
     case operations.Operation.Range:
-        result = range(os.args)
+        result = range(args)
     case operations.Operation.Sort:
-        result = sort(os.args)
+        result = sort(args)
     case operations.Operation.Rsort:
-        result = rsort(os.args)
+        result = rsort(args)
     case operations.Operation.Help:
         utils.print_help()
     case operations.Operation.Unknown:
