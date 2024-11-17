@@ -2,12 +2,13 @@ package errors
 
 Error :: struct {
     kind: Error_Kind,
-    text: string
+    text: string,
 }
 
 Error_Kind :: enum {
     Operation_Error,
-    Nil
+    Help_Error,
+    Nil,
 }
 
 new_error :: proc(kind: Error_Kind, text: string) -> Error {

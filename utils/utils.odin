@@ -97,6 +97,7 @@ int_to_string :: proc(value: int) -> string {
     builder: strings.Builder
     defer strings.builder_destroy(&builder)
     temp := fmt.sbprintf(&builder, "%d", value)
+    defer delete(temp)
     result := strings.clone(temp)
     return result
 }
@@ -104,7 +105,14 @@ int_to_string :: proc(value: int) -> string {
 f64_to_string :: proc(value: f64) -> string {
     builder: strings.Builder
     defer strings.builder_destroy(&builder)
-    temp := fmt.sbprintf(&builder, "%.2f", value)
+    temp: string
+    defer delete(temp)
+    if has_important_decimal(value) {
+        temp = fmt.sbprintf(&builder, "%.2f", value)
+    }
+    else {
+        temp = fmt.sbprintf(&builder, "%.0f", value)
+    }
     result := strings.clone(temp)
     return result
 }
@@ -192,4 +200,8 @@ reverse_f64 :: proc(nums: ^[]f64) {
     for i := 0; i < n; i += 1 {
         nums[i] = temp[i]
     }
+}
+
+has_important_decimal :: proc(num: f64) -> bool {
+    return num != f64(i64(num))
 }

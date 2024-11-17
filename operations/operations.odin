@@ -36,13 +36,13 @@ get_operation :: proc(args: []string) -> (Operation, errors.Error) {
         case "help":    result = Operation.Help
         case:           
             result = Operation.Unknown
-            text := "Unknown operation."
+            text := "Invalid operation. For help, run `blmath help`."
             err := errors.new_error(errors.Error_Kind.Operation_Error, text)
             return result, err
         }
     }
     else {
-        text := "Not enough arguments."
+        text := "Not enough arguments provided."
         return Operation.Unknown, errors.new_error(errors.Error_Kind.Operation_Error, text)
     }
     return result, errors.new_error(errors.Error_Kind.Nil, "")

@@ -11,13 +11,28 @@ import "utils"
 
 main :: proc() {
     op, err := operations.get_operation(os.args)
-    if err.kind != errors.Error_Kind.Nil {
+    using errors
+    if err.kind != Error_Kind.Nil {
         fmt.println("Error:", err.text)
         utils.print_help()
         return
     }
+    result: string; result, err = perform_operation(op, os.args[1:])
+    if err.kind != Error_Kind.Nil && err.kind != Error_Kind.Help_Error {
+        fmt.println("Error:", err.text)
+        utils.print_help()
+        return
+    }
+    else if err.kind == Error_Kind.Help_Error do return
+    title := operations.get_operation_total(op)
+    fmt.printf("%s: %s\n", title, result)
+}
+
+perform_operation :: proc(
+    op: operations.Operation,
+    args: []string
+) -> (string, errors.Error) {
     result: string
-    args := os.args[1:]
     switch op {
     case operations.Operation.Additon:
         result = add(args)
@@ -41,14 +56,13 @@ main :: proc() {
         result = rsort(args)
     case operations.Operation.Help:
         utils.print_help()
+        return "", errors.new_error(errors.Error_Kind.Help_Error, "")
     case operations.Operation.Unknown:
-        fmt.println("Unknown operation.")
-        return
+        text := "Cannot perform unknown operation."
+        return "", errors.new_error(errors.Error_Kind.Operation_Error, text)
     }
-    title := operations.get_operation_total(op)
-    fmt.printf("%s: %s\n", title, result)
+    return result, errors.new_error(errors.Error_Kind.Nil, "")
 }
-
 
 add :: proc(args: []string) -> string {
     nums := utils.convert_args(1.0, args[1:])
@@ -108,7 +122,7 @@ median :: proc(args: []string) -> string {
         result = utils.to_string(temp)
     }
     else {
-        mid := length / 2 
+        mid := length / 2
         temp := nums[mid]
         result = utils.to_string(temp)
     }
