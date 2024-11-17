@@ -3,111 +3,95 @@ package blmath
 import "core:fmt"
 import "core:os"
 import "core:strings"
+import "core:math"
 import "errors"
+import "operations"
+import "utils"
 
 main :: proc() {
-    fmt.println("Hello blmath!")
-    op, err := get_operation(os.args)
+    op, err := operations.get_operation(os.args)
     if err.kind != errors.Error_Kind.Nil {
         fmt.println("Error:", err.text)
         return
     }
     result: string
     switch op {
-    case Operation.Additon:
-        result = add(os.args)
-    case Operation.Subtraction:
+    case operations.Operation.Additon:
+        result = add(os.args[1:])
+    case operations.Operation.Subtraction:
         result = subtract(os.args)
-    case Operation.Multiplication:
+    case operations.Operation.Multiplication:
         result = multiply(os.args)
-    case Operation.Division:
+    case operations.Operation.Division:
         result = divide(os.args)
-    case Operation.Modulo:
+    case operations.Operation.Modulo:
         result = remainder(os.args)
-    case Operation.Mean:
+    case operations.Operation.Mean:
         result = mean(os.args)
-    case Operation.Median:
+    case operations.Operation.Median:
         result = median(os.args)
-    case Operation.Range:
+    case operations.Operation.Range:
         result = range(os.args)
-    case Operation.Sort:
+    case operations.Operation.Sort:
         result = sort(os.args)
-    case Operation.Rsort:
+    case operations.Operation.Rsort:
         result = rsort(os.args)
-    case Operation.Unknown:
+    case operations.Operation.Help:
+        utils.print_help()
+    case operations.Operation.Unknown:
         fmt.println("Unknown operation.")
         return
     }
-    fmt.println("Result:", result)
+    title := operations.get_operation_total(op)
+    fmt.printf("%s: %s\n", title, result)
 }
-
-Operation :: enum {
-    Additon,
-    Subtraction,
-    Multiplication,
-    Division,
-    Modulo,
-    Mean,
-    Median,
-    Range,
-    Sort,
-    Rsort,
-    Unknown
-}
-
-get_operation :: proc(args: []string) -> (Operation, errors.Error) {
-    result: Operation
-    if len(args) > 1 {
-        op := strings.to_lower(args[1])
-        switch op {
-        case "add":     result = Operation.Additon
-        case "sub":     result = Operation.Subtraction
-        case "mult":    result = Operation.Multiplication
-        case "div":     result = Operation.Division
-        case "mod":     result = Operation.Modulo
-        case "mean":    result = Operation.Mean
-        case "median":  result = Operation.Median
-        case "range":   result = Operation.Range
-        case "sort":    result = Operation.Sort
-        case "rsort":   result = Operation.Rsort
-        case:           
-            result = Operation.Unknown
-            text := "Unknown operation."
-            err := errors.new_error(errors.Error_Kind.Operation_Error, text)
-            return result, err
-        }
-    }
-    else {
-        text := "Not enough arguments."
-        return Operation.Unknown, errors.new_error(errors.Error_Kind.Operation_Error, text)
-    }
-    return result, errors.new_error(errors.Error_Kind.Nil, "")
-}
-
 
 
 add :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args[1:])
+    result := math.sum(nums)
+    return utils.to_string(result)
 }
 
 subtract :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args[1:])
+    result := nums[0]
+    for num in nums[1:] {
+        result -= num
+    }
+    return utils.to_string(result)
 }
 
 multiply :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args[1:])
+    result := math.prod(nums)
+    return utils.to_string(result)
 }
 
 divide :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args[1:])
+    result := nums[0]
+    for num in nums[1:] {
+        if num != 0 do result /= num
+    }
+    return utils.to_string(result)
 }
 
 remainder :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(0, args[1:])
+    result := nums[0]
+    for num in nums[1:] {
+        if num != 0 do result %= num
+    }
+    return utils.to_string(result)
 }
 
 mean :: proc(args: []string) -> string {
-    return ""
+    nums := utils.convert_args(1.0, args[1:])
+    length := f64(len(nums))
+    total := math.sum(nums)
+    total /= length
+    return utils.to_string(total)
 }
 
 median :: proc(args: []string) -> string {
