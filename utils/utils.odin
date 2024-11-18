@@ -97,7 +97,6 @@ int_to_string :: proc(value: int) -> string {
     builder: strings.Builder
     defer strings.builder_destroy(&builder)
     temp := fmt.sbprintf(&builder, "%d", value)
-    defer delete(temp)
     result := strings.clone(temp)
     return result
 }
@@ -106,7 +105,6 @@ f64_to_string :: proc(value: f64) -> string {
     builder: strings.Builder
     defer strings.builder_destroy(&builder)
     temp: string
-    defer delete(temp)
     if has_important_decimal(value) {
         temp = fmt.sbprintf(&builder, "%.2f", value)
     }
@@ -119,7 +117,6 @@ f64_to_string :: proc(value: f64) -> string {
 
 int_slice_to_string :: proc(slice: []int) -> string {
     temp := make([]string, len(slice))
-    defer delete(temp)
     for item, i in slice {
         item_str := to_string(item)
         temp[i] = item_str
@@ -130,7 +127,6 @@ int_slice_to_string :: proc(slice: []int) -> string {
 
 f64_slice_to_string :: proc(slice: []f64) -> string {
     temp := make([]string, len(slice))
-    defer delete(temp)
     for item, i in slice {
         item_str := to_string(item)
         temp[i] = item_str
