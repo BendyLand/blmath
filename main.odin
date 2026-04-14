@@ -5,25 +5,25 @@ import "core:os"
 import "core:slice"
 import "core:strings"
 import "core:math"
-import "errors"
+import e "errors" 
 import "operations"
 import "utils"
 
 main :: proc() {
     op, err := operations.get_operation(os.args)
-    using errors
-    if err.kind != Error_Kind.Nil {
+    // using errors
+    if err.kind != e.Error_Kind.Nil {
         fmt.println("Error:", err.text)
         utils.print_help()
         return
     }
     result: string; result, err = perform_operation(op, os.args[1:])
-    if err.kind != Error_Kind.Nil && err.kind != Error_Kind.Help_Error {
+    if err.kind != e.Error_Kind.Nil && err.kind != e.Error_Kind.Help_Error {
         fmt.println("Error:", err.text)
         utils.print_help()
         return
     }
-    else if err.kind == Error_Kind.Help_Error do return
+    else if err.kind == e.Error_Kind.Help_Error do return
     title := operations.get_operation_total(op)
     fmt.printf("%s: %s\n", title, result)
 }
@@ -31,7 +31,7 @@ main :: proc() {
 perform_operation :: proc(
     op: operations.Operation,
     args: []string
-) -> (string, errors.Error) {
+) -> (string, e.Error) {
     result: string
     switch op {
     case operations.Operation.Additon:
@@ -56,12 +56,12 @@ perform_operation :: proc(
         result = rsort(args)
     case operations.Operation.Help:
         utils.print_help()
-        return "", errors.new_error(errors.Error_Kind.Help_Error, "")
+        return "", e.new_error(e.Error_Kind.Help_Error, "")
     case operations.Operation.Unknown:
         text := "Cannot perform unknown operation."
-        return "", errors.new_error(errors.Error_Kind.Operation_Error, text)
+        return "", e.new_error(e.Error_Kind.Operation_Error, text)
     }
-    return result, errors.new_error(errors.Error_Kind.Nil, "")
+    return result, e.new_error(e.Error_Kind.Nil, "")
 }
 
 add :: proc(args: []string) -> string {
